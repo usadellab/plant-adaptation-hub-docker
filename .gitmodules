@@ -1,3 +1,6 @@
 [submodule "camelina-hub-documentation"]
 	path = camelina-hub-documentation
 	url = https://github.com/ataulhaleem/camelina-hub-documentation.git
+[submodule "src"]
+	path = src
+	url = https://github.com/ataulhaleem/camelina-hub-documentation.git
