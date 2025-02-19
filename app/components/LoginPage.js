@@ -1,18 +1,3 @@
-# This file is part of [untwistApp], copyright (C) 2024 [ataul haleem].
-
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 'use client'
 import React, { useState } from 'react';
 import { useApiContext } from "../../contexts/ApiEndPoint";
@@ -27,6 +12,7 @@ const backgroundStyle = {
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
+  background: 'linear-gradient(to right bottom, #d6ff7f, #00b3cc)'
 };
 
 const Login = ({updateAuthenticationStatus}) => {
@@ -61,9 +47,9 @@ const Login = ({updateAuthenticationStatus}) => {
         updateAuthenticationStatus(true);
 
         const accessToken = response.data.access_token;
+
         setApiToken(accessToken)
         Cookies.set('token', accessToken);
-        // console.log(accessToken)
         // return accessToken;
       } else {
         updateAuthenticationStatus(false);
@@ -108,12 +94,12 @@ const Login = ({updateAuthenticationStatus}) => {
 
   return (
     <div style={backgroundStyle}>
-      <Container maxWidth="sm">
-        <Paper elevation={3} style={{ padding: '20px' }}>
-          <Grid container spacing={2} justifyContent="center" alignItems="center">
+      <Container maxWidth="sm"  >
+        <Paper elevation={3} sx={{ border:1, padding: '20px',   background: 'linear-gradient(to right bottom, #d6ff7f, #00b3cc)' }} >
+          <Grid container spacing={2} justifyContent="center" alignItems="center" >
             <Grid item xs={12}>
-              <Typography variant="h5" align="center" color='green'>
-                Untwist Knowledge Hub
+              <Typography variant="h5" align="center" color='green' fontWeight={'bold'}>
+                Plant Adaptation Hub
               </Typography>
             </Grid>
             {error && (

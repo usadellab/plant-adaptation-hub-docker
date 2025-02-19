@@ -1,102 +1,170 @@
-'use client'
-import { Inter } from 'next/font/google'
-import './globals.css'
-
-const inter = Inter({ subsets: ['latin'] })
+"use client";
+import { Inter } from "next/font/google";
+// import "./globals.css";
+import { GlobalStyles } from "@mui/material";
+const inter = Inter({ subsets: ["latin"] });
+import Cookies from "js-cookie";
 
 import * as React from "react";
 import { styled } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import MuiDrawer from "@mui/material/Drawer";
-import MuiAppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import Divider from "@mui/material/Divider";
-import MenuIcon from "@mui/icons-material/Menu";
-import HomeIcon from "@mui/icons-material/Home";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import { useState } from "react";
-import Collapse from "@mui/material/Collapse";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
-import DownloadIcon from "@mui/icons-material/Download";
-import QuizIcon from "@mui/icons-material/Quiz";
-import PermContactCalendarIcon from "@mui/icons-material/PermContactCalendar";
-import ForestIcon from "@mui/icons-material/Forest";
-import PlaceIcon from "@mui/icons-material/Place";
-import InsightsIcon from "@mui/icons-material/Insights";
-import { createTheme } from "@mui/material/styles";
-import Avatar from "@mui/material/Avatar";
-import { Switch } from '@mui/material';
-import { useEffect } from "react";
+import {
+  Box,
+  Drawer as MuiDrawer,
+  AppBar as MuiAppBar,
+  Toolbar,
+  Typography,
+  Divider,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Collapse,
+  Avatar,
+  Switch,
+} from "@mui/material";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import PersonIcon from '@mui/icons-material/Person';
+import {
+  Menu as MenuIcon,
+  Home as HomeIcon,
+  Download as DownloadIcon,
+  Quiz as QuizIcon,
+  PermContactCalendar as PermContactCalendarIcon,
+  Forest as ForestIcon,
+  Place as PlaceIcon,
+  Insights as InsightsIcon,
+  ExpandLess,
+  ExpandMore,
+  Person as PersonIcon,
+} from "@mui/icons-material";
+import {
+  createTheme,
+  ThemeProvider as MuiThemeProvider,
+} from "@mui/material/styles";
+import { ThemeProvider as StyledThemeProvider } from "styled-components";
 
-import { SelectedSpeciesProvider } from '@/contexts/SelectedSpeciesContext';
-import { AppDataContextProvider, useAppDataContext } from "@/contexts/AppDataContext";
+import { SelectedSpeciesProvider } from "@/contexts/SelectedSpeciesContext";
+import { AppDataContextProvider } from "@/contexts/AppDataContext";
 import { ApiContextProvider } from "@/contexts/ApiEndPoint";
 import { TokenProvider } from "@/contexts/TokenContext";
-import QueryStatsIcon from '@mui/icons-material/QueryStats';
+import Login from "./components/LoginPage";
+import {
+  UntwistThemeProvider,
+  useUntwistThemeContext,
+} from "@/contexts/ThemeContext";
 
-
-import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
-import { ThemeProvider as StyledThemeProvider } from 'styled-components';
-import { UntwistThemeProvider, useUntwistThemeContext } from '@/contexts/ThemeContext';
-
-import Login from './components/LoginPage';
-import Cookies from 'js-cookie';
+import CopyrightIcon from '@mui/icons-material/Copyright';
+import PhenotypingMenu from "./components/TopNavBar";
 
 const drawerWidth = 240;
 
-
 const lightTheme = createTheme({
   palette: {
-    mode: 'light',
+    mode: "light",
+    primary: {
+      main: "#3498db", // Vibrant blue
+      contrastText: "#ffffff", // White text for buttons
+    },
+    secondary: {
+      main: "#2ecc71", // Fresh green
+      contrastText: "#ffffff",
+    },
+    background: {
+      default: "#f9f9f9", // Light gray background
+      paper: "#ffffff", // White cards
+    },
+    text: {
+      primary: "#34495e", // Deep gray for readability
+      secondary: "#7f8c8d", // Muted gray
+    },
+    error: {
+      main: "#e74c3c", // Bright red for errors
+    },
   },
+  typography: {
+    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+    fontSize: 14,
+    h1: {
+      fontSize: "2rem",
+      fontWeight: 700,
+      color: "#34495e",
+    },
+    h2: {
+      fontSize: "1.75rem",
+      fontWeight: 600,
+      color: "#34495e",
+    },
+    body1: {
+      fontSize: "1rem",
+      color: "#7f8c8d",
+    },
+    button: {
+      textTransform: "none", // Disable uppercase text in buttons
+    },
+  },
+  shape: {
+    borderRadius: 8, // Rounded corners for components
+  },
+  // components: {
+  //   MuiButton: {
+  //     styleOverrides: {
+  //       root: {
+  //         borderRadius: 12, // Stylish rounded buttons
+  //         textTransform: "none", // Remove all-caps
+  //         boxShadow: "0px 3px 6px rgba(0, 0, 0, 0.1)", // Subtle shadow
+  //       },
+  //       containedPrimary: {
+  //         backgroundColor: "#3498db",
+  //         "&:hover": {
+  //           backgroundColor: "#2980b9", // Darker blue on hover
+  //         },
+  //       },
+  //     },
+  //   },
+  //   MuiPaper: {
+  //     styleOverrides: {
+  //       root: {
+  //         padding: "16px",
+  //         boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)", // Softer shadow for cards
+  //       },
+  //     },
+  //   },
+  // },
 });
 
 const darkTheme = createTheme({
   palette: {
-    mode: 'dark',
+    mode: "dark",
   },
 });
 
 const openedMixin = (theme) => ({
-width: drawerWidth,
-transition: theme.transitions.create("width", {
-  easing: theme.transitions.easing.sharp,
-  duration: theme.transitions.duration.enteringScreen,
-}),
-overflowX: "hidden",
+  width: drawerWidth,
+  transition: theme.transitions.create("width", {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.enteringScreen,
+  }),
+  overflowX: "hidden",
 });
 
 const closedMixin = (theme) => ({
-transition: theme.transitions.create("width", {
-  easing: theme.transitions.easing.sharp,
-  duration: theme.transitions.duration.leavingScreen,
-}),
-overflowX: "hidden",
-width: `calc(${theme.spacing(7)} + 1px)`,
-[theme.breakpoints.up("sm")]: {
-  width: `calc(${theme.spacing(7)} + 10px)`,
-},
+  transition: theme.transitions.create("width", {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  overflowX: "hidden",
+  width: `calc(${theme.spacing(7)} + 1px)`,
+  [theme.breakpoints.up("sm")]: {
+    width: `calc(${theme.spacing(7)} + 10px)`,
+  },
 });
 
-
 const DrawerHeader = styled("div")(({ theme }) => ({
-// display: "flex",
-alignItems: "left",
-// justifyContent: "flex-end",
-// padding: theme.spacing(0, 1),
-// necessary for content to be below app bar
-...theme.mixins.toolbar,
-backgroundColor: theme.palette.background.default,
-color: theme.palette.text.primary,
-height: '1500vh', //'100%', //'1500vh', // Set the height to 100% of the viewport height
-width: "100%", // Set the height to 100% of the viewport height
-marginTop : "50pt",
+  alignItems: "left",
+  ...theme.mixins.toolbar,
+  backgroundColor: theme.palette.background.default,
+  color: theme.palette.text.primary,
+  marginTop: "50pt",
+  // padding: theme.spacing(3), // Added padding for content
 }));
 
 const AppBar = styled(MuiAppBar, {
@@ -107,18 +175,15 @@ const AppBar = styled(MuiAppBar, {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
-  backgroundColor: open ? "#f0f0f0" : '#f0f0f0',
-
   ...(open && {
     marginLeft: drawerWidth,
-    width: -100, //`calc(100% - ${drawerWidth}px)`,
+    width: `calc(100% - ${drawerWidth}px)`,
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
   }),
 }));
-
 
 const Drawer = styled(MuiDrawer, {
   shouldForwardProp: (prop) => prop !== "open",
@@ -130,18 +195,15 @@ const Drawer = styled(MuiDrawer, {
     ...openedMixin(theme),
     "& .MuiDrawer-paper": {
       ...openedMixin(theme),
-      backgroundColor: "#f0f0f0", 
     },
   }),
   ...(!open && {
     ...closedMixin(theme),
     "& .MuiDrawer-paper": {
       ...closedMixin(theme),
-      backgroundColor: "#927692", 
     },
   }),
 }));
-
 
 function parseToken(token) {
   try {
@@ -158,380 +220,457 @@ function parseToken(token) {
 function isTokenExpired(token) {
   const expirationTimestamp = parseToken(token);
   if (expirationTimestamp === null) {
-    // Token parsing error
-    return true; // Consider it expired
+    return true; // Consider it expired if there's an error parsing
   }
-
-  // Convert the expiration timestamp to milliseconds
   const expirationDate = new Date(expirationTimestamp * 1000);
-  const currentDate = new Date();
-
-  // Compare the current date to the token's expiration date
-  return currentDate > expirationDate;
+  return new Date() > expirationDate;
 }
 
 
-
 export default function RootLayout({ children }) {
-  const router = useRouter()
-  const { selectedSpp, setSelectedSpp } = useState("camelina");
-  const [genomicsDropDown, setgenomicsDropDown] = React.useState(false);
+  
+  const formatTitle = (text) => (
+    <Typography
+      variant="h6"
+      sx={{
+        //  mx: 2,
+        // display: { md: 'flex' },
+        // fontFamily: '-apple-system',
+        fontWeight: "bold",
+        // letterSpacing: '.3rem',
+        // color: 'inherit',
+        // textDecoration: 'none',
+      }}
+    >
+      {text}
+    </Typography>
+  );
+
+  const defaultTitle = formatTitle("Plant Adaptation Hub");
+  const router = useRouter();
   const [open, setOpen] = useState(true);
-  const [selectedTheme, setSelectedTheme] = useState(lightTheme)
-  const [leftMarginChildren, setLeftMargin] = useState(30)
+  const [selectedTheme, setSelectedTheme] = useState(lightTheme);
   const [isDark, setIsDark] = useState(false);
-  const {isDarkMode, toggleTheme} = useUntwistThemeContext();
   const [authenticated, setAuthenticated] = useState(false);
+  const [appBarTitle, setAppBarTitle] = useState(defaultTitle);
+  const { isDarkMode, toggleTheme } = useUntwistThemeContext();
 
   useEffect(() => {
-    // Check for the presence of a token in cookies on page load
-    try {
-      const token = Cookies.get("token");
-  
-      // Check if the token exists before proceeding
-      if (token) {
-        if (isTokenExpired(token)) {
-          setAuthenticated(false);
-        } else {
-          setAuthenticated(true);
-        }
-      } else {
-        console.log('Token not found. Looks like you are here for the first time.');
-      }
-    } catch (error) {
-      console.error('Error checking token:', error);
+    const token = Cookies.get("token");
+    if (token && !isTokenExpired(token)) {
+      setAuthenticated(true);
     }
   }, []);
-  
-
-  const updateAuthenticationStatus = (status) => {
-    setAuthenticated(status);
-  };
 
   const changeTheme = () => {
     setIsDark(!isDark);
   };
 
-  const [appBarTitle, setAppBarTitle] = useState(
-    <Typography variant="h6" sx={{
-        // mx: 2,
-        // display: { md: 'flex' },
-        // fontFamily: '-apple-system',
-        // fontWeight: 700,
-        // letterSpacing: '.3rem',
-        // color: 'green', //'inherit',
-        // textDecoration: 'none',
-    }}>
-      UNTWIST KNOWLEDGE HUB
-    </Typography>
+  useEffect(() => {
+    setSelectedTheme(isDark ? darkTheme : lightTheme);
+    Cookies.set("isDarkMode", isDark);
+  }, [isDark]);
+
+  const handleAppBarTitle = (text) => setAppBarTitle(formatTitle(text));
+  const ToggleDrawer = () => setOpen(!open);
+
+  var gwasIconPic = new URL("/public/manhattan.png", import.meta.url);
+  var pcaIconPic = new URL("/public/pca.png", import.meta.url);
+  var mdsIconPic = new URL("/public/mds.png", import.meta.url);
+  var syntenyIconPic = new URL("/public/synteny_image.png", import.meta.url);
+  var genomeIconPic = new URL("/public/genome_icon.png", import.meta.url);
+  var genomeInfoIconPic = new URL(
+    "/public/genome_informatics_icon.png",
+    import.meta.url
   );
+  var annotateIconPic = new URL("/public/annotate.png", import.meta.url);
+  var phylogenyIconPic = new URL("/public/phylogeny.png", import.meta.url);
+  var hublogo = new URL("/public/hub_logo.png", import.meta.url);
 
-  const handleAppBarTitle = (text) => {
-    const newTitle = <Typography variant="h6" sx={{
-      mx: 2,
-      // display: { md: 'flex' },
-      // fontFamily: '-apple-system',
-      // fontWeight: 700,
-      // letterSpacing: '.2rem',
-      // color: 'green', //'inherit',
-      // textDecoration: 'none',
-  }}>
-    {text}
-  </Typography>
+  const menuItems = [
+    {
+      text: "Home",
+      icon: <HomeIcon color="primary" />,
+      path: "/router?component=home",
+      title: "Plant Adaptation Hub",
+    },
+    {
+      text: "Germplasm",
+      icon: <PlaceIcon color="primary" />,
+      path: "/router?component=germplasm",
+      title: "Geographical distribution of the germplasm",
+    },
+    {
+      text: "Phenotypic Data",
+      icon: <ForestIcon color="primary" />,
+      path: "/router?component=vispheno",
+      title: "Analysis and visualization of phenotypic traits",
+    },
+    { text: "Genomics", title: "Analysis and visualization Genotypic data" },
+    { text: "Genome Informatics" },
+    {
+      text: "Genome Browser",
+      title: "Explore multi-omics data in the context of genome",
+      icon: (
+        <Avatar sx={{ width: 25, height: 22 }} alt="Icon" src="/dna-icon.png" />
+      ),
+      path: "/router?component=jb",
+    },
+    {
+      text: "Downloads",
+      icon: <DownloadIcon color="primary" />,
+      path: "/router?component=downloads",
+      title: "Downloads",
+    },
+    {
+      text: "FAQs",
+      icon: <QuizIcon color="primary" />,
+      path: "/router?component=faqs",
+      title: "Frequently Asked Questions (FAQs)",
+    },
+    {
+      text: "People",
+      icon: <PersonIcon color="primary" />,
+      path: "/router?component=people",
+      title: "Relevant scientists and their affiliations",
+    },
+    {
+      text: "Contact",
+      icon: <PermContactCalendarIcon color="primary" />,
+      path: "/router?component=contact",
+      title: "Contact Information",
+    },
+    {
+      text: "IMPRESSUM INFORMATION",
+      icon: <CopyrightIcon color="primary" />,
+      path: "/router?component=impressum",
+      title: "IMPRESSUM INFORMATION",
+    },
+    {
+      text: "GDPRC PRIVACY NOTICE",
+      icon: <CopyrightIcon color="primary" />,
+      path: "/router?component=gdprc",
+      title: "GDPRC PRIVACY NOTICE",
+    },
 
-setAppBarTitle(newTitle)
+  ];
 
+  const [genomicsDropDown, setgenomicsDropDown] = React.useState(false);
+  const [comparativeGenomicsDropDown, setcomparativeGenomicsDropDown] =
+    React.useState(false);
 
-  }
+  const handlecomparativeGenomics = () => {
+    setcomparativeGenomicsDropDown(!comparativeGenomicsDropDown);
+  };
 
   const handleGenomics = () => {
     setgenomicsDropDown(!genomicsDropDown);
   };
 
-
-  const ToggleDrawer = () => {
-    setOpen(!open);
-  };
-
-  useEffect(() => {
-    const newTheme = isDark ? darkTheme : lightTheme ;
-    setSelectedTheme(newTheme)
-  },[isDark])
-
-useEffect(() => {
-  if(open){
-    setLeftMargin(30)
-  }else{
-    setLeftMargin(8)
-  }
-}, [open])
-
-  var gwasIconPic = new URL("/public/manhattan.png", import.meta.url);
-  var pcaIconPic = new URL("/public/pca.png", import.meta.url);
-  var mdsIconPic = new URL("/public/mds.png", import.meta.url);
-
   return (
     <html lang="en">
-
-
       <ApiContextProvider>
         <TokenProvider>
-        <StyledThemeProvider theme={selectedTheme}>
-  <MuiThemeProvider theme={selectedTheme}>
-              <AppDataContextProvider>
-      <SelectedSpeciesProvider>
 
+          <AppDataContextProvider>
 
+            <StyledThemeProvider theme={selectedTheme}>
+              <MuiThemeProvider theme={selectedTheme}>
+                {/* Apply global styles to body */}
+                <GlobalStyles
+                  styles={{
+                    body: {
+                      backgroundColor: selectedTheme.palette.background.default,
+                      color: selectedTheme.palette.text.primary,
+                      transition: "background-color 0.3s, color 0.3s",
+                      background: authenticated || 'linear-gradient(to right bottom, #d6ff7f, #00b3cc)'
 
-      <body className={inter.className}>
-      {  !authenticated ? (
-    // router.push('/login');
-    <Login updateAuthenticationStatus={updateAuthenticationStatus} />
-) : (
-  <div>
-<AppBar position="fixed" open={open} color="default" enableColorOnDark>
-          <Toolbar>
-            <MenuIcon sx={{ marginRight: 2 }} onClick={ToggleDrawer} />
-
-            {appBarTitle}
-          </Toolbar>
-        </AppBar>
-
-        <Drawer variant="permanent" open={open}>
-          <Divider />
-          <div>
-              <ListItemButton
-                sx={{ mt: 8 }}
-                onClick={(e) => {
-                  handleAppBarTitle("Home")
-                  router.push("/router?component=home");
-                }}
-              >
-                <ListItemIcon>
-                  <HomeIcon />
-                </ListItemIcon>
-                <ListItemText primary="Home" />
-              </ListItemButton>
-
-            <ListItemButton
-              onClick={() => {
-                handleAppBarTitle("Germplasm");
-                router.push("/router?component=germplasm");
-              }}
-            >
-              <ListItemIcon>
-                <PlaceIcon />
-              </ListItemIcon>
-              <ListItemText primary="Germplasm" />
-            </ListItemButton>
-
-            <ListItemButton
-              onClick={() => {
-                handleAppBarTitle("Visualization of phenotyic data");
-                router.push("/router?component=vispheno");
-
-              }}
-            >
-              <ListItemIcon>
-                <ForestIcon />
-              </ListItemIcon>
-              <ListItemText primary="Phenotypic Data" />
-            </ListItemButton>
-
-            <ListItemButton
-              onClick={() => {
-                if (selectedSpp === "") {
-                  setContent(<DataSetMaker />);
-                } else {
-                  handleGenomics();
-                }
-              }}
-            >
-              <ListItemIcon>
-                <InsightsIcon />
-              </ListItemIcon>
-              <ListItemText primary="Genomics" />
-              {genomicsDropDown ? <ExpandLess /> : <ExpandMore />}
-            </ListItemButton>
-
-            <Collapse in={genomicsDropDown} timeout="auto" unmountOnExit>
-
-            {/* <ListItemButton
-                  onClick={() => {
-                    handleAppBarTitle("Summary Statistics");
-                    router.push("/router?component=summary_statistics");
-
+                    },
                   }}
-                >
-                  <ListItemIcon>
-                  <QueryStatsIcon/> 
-</ListItemIcon>
-<ListItemText primary="Summary Statistics" />
-</ListItemButton> */}
-
-
-
-                <ListItemButton
-                  onClick={() => {
-                    handleAppBarTitle("GWAS");
-                    router.push("/router?component=gwas");
-
-                  }}
-                >
-                  <ListItemIcon>
-<Avatar sx={{ width: 25, height: 25 }} alt="Icon" src={gwasIconPic}></Avatar>
-
-                  </ListItemIcon>
-                  <ListItemText primary="GWAS" />
-                </ListItemButton>
-
-
-                <ListItemButton
-                  onClick={() => {
-                    handleAppBarTitle("PCA");
-                    router.push("/router?component=pca");
-                  }}
-                >
-                  <ListItemIcon>
-                  <Avatar sx={{ width: 25, height: 25 }} alt="Icon" src={pcaIconPic}></Avatar>
-
-                  </ListItemIcon>
-                  <ListItemText primary="PCA" />
-                </ListItemButton>
-
-                <ListItemButton
-                  onClick={() => {
-                    handleAppBarTitle("MDS");
-                    router.push("/router?component=mds");
-                  }}
-                >
-                  <ListItemIcon>
-                  <Avatar sx={{ width: 25, height: 25 }} alt="Icon" src={mdsIconPic}></Avatar>
-
-                  </ListItemIcon>
-                  <ListItemText primary="MDS" />
-                </ListItemButton>
-
-
-
-                {/* <ListItemButton
-                  onClick={() => {
-                    handleAppBarTitle("Phylogenetics");
-                    router.push("/router?component=PhyloTreeComp");
-                  }}
-                >
-                  <ListItemIcon>
-                  <Avatar sx={{ width: 25, height: 25 }} alt="Icon" src={mdsIconPic}></Avatar>
-
-                  </ListItemIcon>
-                  <ListItemText primary="PhyloTree" />
-                </ListItemButton> */}
-
-
-            </Collapse>
-
-            <ListItemButton
-              onClick={() => {
-                handleAppBarTitle("Genome Browser");
-                router.push("/router?component=jb");
-
-              }}
-            >
-              <ListItemIcon>
-                <Avatar sx={{ width: 25, height: 25 }} alt="Icon" src='/dna-icon.png' />
-              </ListItemIcon>
-              <ListItemText primary="Genome Browser" />
-            </ListItemButton>
-
-            <ListItemButton 
-            onClick={() => {
-              handleAppBarTitle("Downloads");
-              router.push("/router?component=downloads");
-        }}
-            >
-              <ListItemIcon>
-                <DownloadIcon />
-              </ListItemIcon>
-              <ListItemText primary="Downloads" />
-            </ListItemButton>
-
-            <ListItemButton
-              onClick={() => {
-                handleAppBarTitle("FAQs");
-                router.push("/router?component=faqs");
-              }}
-            >
-              <ListItemIcon>
-                <QuizIcon />
-              </ListItemIcon>
-              <ListItemText primary="FAQs" />
-            </ListItemButton>
-
-            <ListItemButton
-              onClick={() => {
-                handleAppBarTitle("People");
-                router.push("/router?component=people");
-              }}
-            >
-              <ListItemIcon>
-                <PersonIcon />
-              </ListItemIcon>
-              <ListItemText primary="People" />
-            </ListItemButton>
-
-
-
-            <ListItemButton
-              onClick={() => {
-                handleAppBarTitle("Contact");
-                router.push("/router?component=contact");
-              }}
-            >
-              <ListItemIcon>
-                <PermContactCalendarIcon />
-              </ListItemIcon>
-              <ListItemText primary="Contact" />
-            </ListItemButton>
-
-            {/* <UntwistThemeProvider value={{isDarkMode, toggleTheme}}>
-
-            <ListItemButton onClick={toggleTheme}>
-              <ListItemIcon>
-                <Switch
-                  sx={{ ml: -2 }}
-                  checked={isDark}
-                  onChange={changeTheme}
-                  inputProps={{ "aria-label": "toggle theme" }}
                 />
-              </ListItemIcon>
-              <ListItemText
-                primary="Dark Theme"
-              />
-            </ListItemButton>
-            </UntwistThemeProvider> */}
 
-          </div>
+                <SelectedSpeciesProvider>
+                  <body className={inter.className}>
+                    {!authenticated ? (
+                      <Login updateAuthenticationStatus={setAuthenticated} />
+                    ) : (
 
-          
-        </Drawer>
-        
-<DrawerHeader sx={{marginLeft : leftMarginChildren, marginTop : 8,  width: '80%',  height: '1500vh'}}>
-  
 
-<div>{children}</div>
-</DrawerHeader>
-</div>
-)
-}
+                      <div>                       
+                        <AppBar
+                          position="fixed"
+                          open={open}
+                          color="default"
+                          enableColorOnDark
+                        >
+                          <Toolbar sx={{ border: 1, borderColor: "green" }}>
+                            <MenuIcon
+                              sx={{ mr: open ? 1 : 4 }}
+                              onClick={ToggleDrawer}
+                            />
+                            <div>{appBarTitle}</div>
 
-      </body>
+                            <Box sx={{ display: "flex", justifyContent: "center", flexGrow: 1 }}>
+    <PhenotypingMenu />
+  </Box>
+                              <Switch
+                              sx={{ ml: "auto" }}
+                              checked={isDark}
+                              onChange={() => {
+                                changeTheme();
+                              }}
+                              inputProps={{ "aria-label": "toggle theme" }}
+                            />
+                          </Toolbar>
+                        </AppBar>
 
-      </SelectedSpeciesProvider>
-      </AppDataContextProvider>
-      </MuiThemeProvider>
-</StyledThemeProvider>
-      </TokenProvider>
+                        <Drawer variant="permanent" open={open}>
+                          <Avatar
+                            sx={{ ml: -2, mt: -6, width: "100%", height: 110 }}
+                            alt="Icon"
+                            src={hublogo}
+                          />
+                          <Divider sx={{ mb: -8 }} />
+                          <div>
+                            {menuItems.map((item, index) => {
+                              if (item.text === "Genomics") {
+                                return (
+                                  <div key={index}>
+                                    <ListItemButton
+                                      onClick={() => {
+                                        handleGenomics();
+                                      }}
+                                    >
+                                      <ListItemIcon>
+                                        <InsightsIcon color="primary" />
+                                      </ListItemIcon>
+                                      <ListItemText primary="Genomics" />
+                                      {genomicsDropDown ? (
+                                        <ExpandLess />
+                                      ) : (
+                                        <ExpandMore />
+                                      )}
+                                    </ListItemButton>
+                                    <Collapse
+                                      in={genomicsDropDown}
+                                      timeout="auto"
+                                      unmountOnExit
+                                    >
+                                      <ListItemButton
+                                        onClick={() => {
+                                          handleAppBarTitle(
+                                            "Genome Wide Association Analysis (GWAS)"
+                                          );
+                                          router.push("/router?component=gwas");
+                                        }}
+                                      >
+                                        <ListItemIcon>
+                                          <Avatar
+                                            sx={{ width: 25, height: 25 }}
+                                            alt="Icon"
+                                            src={gwasIconPic}
+                                          />
+                                        </ListItemIcon>
+                                        <ListItemText primary="GWAS" />
+                                      </ListItemButton>
+
+                                      <ListItemButton
+                                        onClick={() => {
+                                          handleAppBarTitle(
+                                            "Principal Component Analysis (PCA)"
+                                          );
+                                          router.push("/router?component=pca");
+                                        }}
+                                      >
+                                        <ListItemIcon>
+                                          <Avatar
+                                            sx={{ width: 25, height: 25 }}
+                                            alt="Icon"
+                                            src={pcaIconPic}
+                                          />
+                                        </ListItemIcon>
+                                        <ListItemText primary="PCA" />
+                                      </ListItemButton>
+
+                                      <ListItemButton
+                                        onClick={() => {
+                                          handleAppBarTitle(
+                                            "Multidimentional Scaling (MDS)"
+                                          );
+                                          router.push("/router?component=mds");
+                                        }}
+                                      >
+                                        <ListItemIcon>
+                                          <Avatar
+                                            sx={{ width: 25, height: 25 }}
+                                            alt="Icon"
+                                            src={mdsIconPic}
+                                          />
+                                        </ListItemIcon>
+                                        <ListItemText primary="MDS" />
+                                      </ListItemButton>
+                                    </Collapse>
+                                  </div>
+                                );
+                              } else if (item.text === "Genome Informatics") {
+                                return (
+                                  <div key={index}>
+                                    <ListItemButton
+                                      onClick={() => {
+                                        handlecomparativeGenomics();
+                                      }}
+                                    >
+                                      <ListItemIcon>
+                                        <Avatar
+                                          sx={{ width: 25, height: 25 }}
+                                          alt="Icon"
+                                          src={genomeInfoIconPic}
+                                        />
+                                      </ListItemIcon>
+                                      <ListItemText primary="Genome Informatics" />
+                                      {comparativeGenomicsDropDown ? (
+                                        <ExpandLess />
+                                      ) : (
+                                        <ExpandMore />
+                                      )}
+                                    </ListItemButton>
+                                    <Collapse
+                                      in={comparativeGenomicsDropDown}
+                                      timeout="auto"
+                                      unmountOnExit
+                                    >
+                                      <ListItemButton
+                                        onClick={() => {
+                                          handleAppBarTitle(
+                                            "Assembly Quality Statistics"
+                                          );
+                                          router.push(
+                                            "/router?component=genome_overview"
+                                          );
+                                        }}
+                                      >
+                                        <ListItemIcon>
+                                          <Avatar
+                                            sx={{ width: 25, height: 25 }}
+                                            alt="Icon"
+                                            src={genomeIconPic}
+                                          />
+                                        </ListItemIcon>
+                                        <ListItemText primary="Genomes" />
+                                      </ListItemButton>
+
+                                      <ListItemButton
+                                        onClick={() => {
+                                          handleAppBarTitle(
+                                            "Compare Genome Assemblies"
+                                          );
+                                          router.push(
+                                            "/router?component=assembly_comparison"
+                                          );
+                                        }}
+                                      >
+                                        <ListItemIcon>
+                                          <Avatar
+                                            sx={{ width: 25, height: 25 }}
+                                            alt="Icon"
+                                            src={syntenyIconPic}
+                                          />
+                                        </ListItemIcon>
+                                        <ListItemText primary="Compare Genome Assemblies " />
+                                      </ListItemButton>
+
+                                      {/* <ListItemButton
+                                          onClick={() => {
+                                            handleAppBarTitle("Comparative analysis of genomic structures");
+                                            router.push("/router?component=gs");
+                                          }}
+                                        >
+                                          <ListItemIcon>
+                                            <Avatar
+                                              sx={{ width: 25, height: 25 }}
+                                              alt="Icon"
+                                              src={syntenyIconPic}
+                                            />
+                                          </ListItemIcon>
+                                          <ListItemText primary="Genome Structures" />
+                                        </ListItemButton>
+
+
+                                        <ListItemButton
+                                          onClick={() => {
+                                            handleAppBarTitle("Get custome genome annotations");
+                                            router.push("/router?component=genome_annotation");
+                                          }}
+                                        >
+                                          <ListItemIcon>
+                                            <Avatar
+                                              sx={{ width: 25, height: 25 }}
+                                              alt="Icon"
+                                              src={annotateIconPic}
+                                            />
+                                          </ListItemIcon>
+                                          <ListItemText primary="Annotate" />
+                                        </ListItemButton>
+
+
+                                        <ListItemButton
+                                          onClick={() => {
+                                            handleAppBarTitle("Phylogenetic analysis");
+                                            router.push("/router?component=genome_phylogeny");
+                                          }}
+                                        >
+                                          <ListItemIcon>
+                                            <Avatar
+                                              sx={{ width: 25, height: 25 }}
+                                              alt="Icon"
+                                              src={phylogenyIconPic}
+                                            />
+                                          </ListItemIcon>
+                                          <ListItemText primary="Phylogeny" />
+                                        </ListItemButton> */}
+                                    </Collapse>
+                                  </div>
+                                );
+                              }
+
+                              return (
+                                <ListItemButton
+                                  key={index}
+                                  sx={{ mt: index === 0 ? 8 : 0 }}
+                                  onClick={() => {
+                                    handleAppBarTitle(item.title);
+                                    router.push(item.path);
+                                  }}
+                                >
+                                  <ListItemIcon>{item.icon}</ListItemIcon>
+                                  <ListItemText primary={item.text} />
+                                </ListItemButton>
+                              );
+                            })}
+                          </div>
+                        </Drawer>
+
+                        <DrawerHeader theme={selectedTheme}
+                          sx={{ marginLeft: open ? 30 : 8, marginTop: 8 }}
+                        >
+                          {children}
+                        </DrawerHeader>
+
+                      </div>
+
+
+
+                    )}
+                  </body>
+                </SelectedSpeciesProvider>
+
+              </MuiThemeProvider>
+            </StyledThemeProvider>
+            
+          </AppDataContextProvider>
+
+        </TokenProvider>
       </ApiContextProvider>
     </html>
-  )
+  );
 }

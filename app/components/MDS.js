@@ -1,18 +1,3 @@
-# This file is part of [untwistApp], copyright (C) 2024 [ataul haleem].
-
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 "use client";
 import * as React from "react";
 import { Button } from "@mui/material";
@@ -21,6 +6,10 @@ import axios from "axios";
 import { useSelectedSpecies } from "../../contexts/SelectedSpeciesContext";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
+
+
 import { useState, useEffect } from "react";
 import Papa from "papaparse";
 import PlotlyPlots from "./PlotlyPlots2";
@@ -30,18 +19,41 @@ import { useUntwistThemeContext } from "../../contexts/ThemeContext"
 import { UntwistThemeProvider } from "../../contexts/ThemeContext";
 import { useAppDataContext } from "../../contexts/AppDataContext";
 import { useTokenContext } from "../../contexts/TokenContext";
+import { useApiContext } from "@/contexts/ApiEndPoint";
+import Cookies from "js-cookie";
+import MDSplot from "./plots/mdsplot";
 
-var dbID = {
-  Camelina: "camelina",
-  Brassica: "brassica",
-};
+
+// var dbID = {
+//   Camelina: "camelina",
+//   Brassica: "brassica",
+// };
 
 export default function MDS(props) {
-  const { isDarkMode, toggleTheme } = useUntwistThemeContext();
+
+  const { apiEndpoint } = useApiContext()
+
   const [startMDS, setStartMDS] = useState(false);
   const {mdsData, setMdsData} = useAppDataContext()
   const [displayMessage, setDisplayMessage] = useState([]);
   const {apiToken, setApiToken} = useTokenContext();
+  const {k, setK} = useAppDataContext()
+
+
+
+
+const [isDarkMode, setIsDarkMode] = useState(false);
+
+useEffect(() => {
+  const intervalId = setInterval(() => {
+    const darkModeValue = Cookies.get("isDarkMode");
+    setIsDarkMode(darkModeValue === "true");
+  }, 1); // Check every second
+
+  return () => clearInterval(intervalId); // Cleanup on unmount
+}, []);
+
+
 
   const runMDS = () => {
     setStartMDS(true);
@@ -60,14 +72,19 @@ export default function MDS(props) {
     }
   }, [modalIsOpen]);
 
+
+
   useEffect(() => {
     if (startMDS) {
       var msgs = [];
-      const plinkWorker = new Worker("/wasm/plink-worker.js"); // Adjust the path to your worker script
+      const plinkWorker = new Worker("/plink-worker.js"); // Adjust the path to your worker script
       plinkWorker.postMessage({
         cmd: "runMDS",
         token: apiToken,
         spp: "camelina",
+        k : k,
+        apiEndpoint : apiEndpoint
+
       });
       plinkWorker.onmessage = (e) => {
         if (e.data.cmd === "processed") {
@@ -85,31 +102,38 @@ export default function MDS(props) {
     setTimeElapsed(0);
   }, [startMDS]);
 
-  // useEffect(() => {
-  //   const localMdsData = JSON.parse(localStorage.getItem('mdsData'));
-  //   if (localMdsData) {
-  //     setMdsData(localMdsData);
-  //   }
-  // }, []);
 
+  const handleK = (v) => {
+    setK(v)
+    runMDS()
+}
 
   return (
     <>
-    <UntwistThemeProvider values={{isDarkMode, toggleTheme}}>
 
       {!modalIsOpen || (
         <MessageWithTimer messages={displayMessage} timeElapsed={timeElapsed} />
       )}
 
         <Grid sx={{ ml:2,marginTop: 2, marginBottom: 2, marginRight: 2 }}>
-          <Typography variant="h4">Multidimentional Scaling</Typography>
+          {/* <Typography variant="h4">Multidimentional Scaling</Typography>
 
           <Typography variant="p">
             {`This tool computes and visualizes MDS coordinates based on the same genotypic data available for GWAS analyisis.`}
-          </Typography>
+          </Typography> */}
         </Grid>
           <div padding={2}>
-            <Button
+
+            <Grid container  sx={{ marginLeft: 2, marginBottom:2, marginTop :4  }}>
+              <Autocomplete size="small"
+              defaultValue={k}
+  options={["2","3","4","5","6","7","8","9","10"]}
+  sx={{ width: 250 }}
+  renderInput={(params) => <TextField {...params} label="Set number of clusters (k)"/>}
+  onChange={(e,v) => handleK(v)}
+/>
+              
+<Button
               sx={{ marginLeft: 1, marginBottom:2  }}
               variant="contained"
               onClick={runMDS}
@@ -118,11 +142,14 @@ export default function MDS(props) {
               perform MDS
             </Button>
 
+
+            </Grid>
+
             {!mdsData || (
               <div>
-                <PlotlyPlots
+                <MDSplot
                   plotSchema={{
-                    ploty_type: "mds",
+                    plot_type: "mds",
                     inputData: mdsData,
                     variablesToPlot: ["C1", "C2"],
                     plotTitle: "Multidimentional Scaling",
@@ -136,7 +163,6 @@ export default function MDS(props) {
           </div>
 
 
-    </UntwistThemeProvider>
 
     </>
   );

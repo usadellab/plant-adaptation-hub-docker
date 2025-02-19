@@ -1,18 +1,3 @@
-# This file is part of [untwistApp], copyright (C) 2024 [ataul haleem].
-
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 "use client";
 import * as React from "react";
 import { Button, Stack } from "@mui/material";
@@ -41,8 +26,8 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 
 import dynamic from "next/dynamic";
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
-import ChromosomePlot from "./ChromoMap";
-import ChromosomeMap from "./ChromosomePlot";
+import ChromosomePlot from "./test/ChromoMap";
+import ChromosomeMap from "./test/ChromosomePlot";
 
 import chrLengths from "/public/chromsizes.json";
 import BarPlot from "./BarPlot";

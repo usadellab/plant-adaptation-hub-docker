@@ -225,7 +225,7 @@ const Footer = ({ isDark }) => {
         </Box>
 
         <Typography sx={styles.copyRight}>
-          © 2014-2023 Usadel lab | IBG-4, Forschungszentrum Jülich | Heinrich Heine University Düsseldorf
+          © 2014-2024 Usadel lab | IBG-4, Forschungszentrum Jülich | Heinrich Heine University Düsseldorf
         </Typography>
       </Container>
     </Box>

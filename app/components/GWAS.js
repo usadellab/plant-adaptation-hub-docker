@@ -1,18 +1,3 @@
-# This file is part of [untwistApp], copyright (C) 2024 [ataul haleem].
-
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 "use client";
 import * as React from "react";
 import Box from "@mui/material/Box";
@@ -40,13 +25,14 @@ import TableComponent from "../components/SimpleTableComponent";
 
 import MessageWithTimer from "./MessageDisplay";
 import { useTokenContext } from "../../contexts/TokenContext";
-import { useApiContext } from "../../contexts/ApiEndPoint";
+import { useApiContext } from "@/contexts/ApiEndPoint";
 import { useUntwistThemeContext } from "../../contexts/ThemeContext";
 import { UntwistThemeProvider } from "../../contexts/ThemeContext";
-import View from "./GenomeBrowser";
-
+import View from "./backup/GenomeBrowser";
+import QQPlot from "./plots/qqplot";
 
 import { useAppDataContext } from "@/contexts/AppDataContext";
+import Cookies from "js-cookie";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -83,12 +69,12 @@ var dbID = {
   Brassica: "brassica",
 };
 
-export default function GWAS() {
 
-  const apiEndpoint = useApiContext().apiEndpoint;
-  const { isDarkMode, toggleTheme } = useUntwistThemeContext();
+
+export default function GWAS({phenotype, famString}) {
+  const {apiEndpoint} = useApiContext();
   const { selectedSpp, setSelectedSpp } = useSelectedSpecies();
-  const {chosenFile, setChosenFile} = useAppDataContext();
+  // const {chosenFile, setChosenFile} = useAppDataContext();
   const {inputFiles, setInputFiles} = useAppDataContext();
   const {startGWAS, setStartGwas} = useAppDataContext();
   const {plinkResults, setPlinkResults} = useAppDataContext();
@@ -104,6 +90,8 @@ export default function GWAS() {
   const {showGenomeView, setShowGenomeView} = useAppDataContext();
   const {gbPosition, setGbPosition} = useAppDataContext();
   const {selectedAnnotationsWindowOption, setSelectedAnnotationsWindowOption} = useAppDataContext();
+  const {isToggled, setPlotIsToggled} =  useAppDataContext();
+
 
 
   const [displayMessage, setDisplayMessage] = useState([]);
@@ -115,6 +103,18 @@ export default function GWAS() {
 
   const {activeTab, setActiveTab} = useAppDataContext();
 
+
+
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+useEffect(() => {
+  const intervalId = setInterval(() => {
+    const darkModeValue = Cookies.get("isDarkMode");
+    setIsDarkMode(darkModeValue === "true");
+  }, 1); // Check every second
+
+  return () => clearInterval(intervalId); // Cleanup on unmount
+}, []);
 
   const setDefaults = () => {
     // setPlinkResults([]);
@@ -156,15 +156,18 @@ export default function GWAS() {
     setModalIsOpen(true);
   };
 
+
   const handlePointClick = (event) => {
-    // Extract data from the clicked poin
-    const chromosome = event.points[0].data.name.split("_")[1];
-    const position = event.points[0].x;
+    // Extract data from the clicked point
+    const chromosome = event.points[0].data.name.split(" ")[1]; // Get chromosome name from trace name
+    const position = event.points[0].customdata; // Get the actual SNP position from customdata
+
+    // Update state with the clicked point's data
     setManplotChrClicked(chromosome);
-    setGbPosition(position);
+    setGbPosition(position); // Use the actual position, not the cumulative position
     setShowGenomeView(true);
     changeTabDynamically(3);
-  };
+};
 
 
   const handleAnnotationsWindowOptions = (newVal) => {
@@ -219,7 +222,7 @@ export default function GWAS() {
 
   useEffect(() => {
     axios
-      .post(`${apiEndpoint}/getBucketObjectList/?token=${token.apiToken}`)
+      .post(`${apiEndpoint}/getBucketObjectList?token=${token.apiToken}`)
       .then((response) => {
         let gwasFiles = [];
         let plinkFolder = response.data[dbID[selectedSpp]].Plink;
@@ -253,9 +256,11 @@ export default function GWAS() {
       plinkWorker.postMessage({
         cmd: "runGWAS",
         token: token.apiToken,
-        fam: chosenFile,
+        fam: famString,
+        phenotype : phenotype.title,
         spp: "camelina",
         correction: gwasCorrectionOption,
+        apiEndpoint : apiEndpoint
       });
       plinkWorker.onmessage = (e) => {
         if (e.data.cmd === "processed") {
@@ -263,6 +268,7 @@ export default function GWAS() {
           setIsGwasDone(true);
           setModalIsOpen(false);
           setTimeElapsed(0);
+          setPlotIsToggled(true)
         } else if (e.data.cmd === "message") {
           msgs.push(e.data.res);
           setDisplayMessage(msgs);
@@ -299,15 +305,19 @@ export default function GWAS() {
       setAnnotationsDone(false);
       const winSize = annotationsWindowOptions[selectedAnnotationsWindowOption];
       var sigData = getSigSNPs(plinkResults, pVals[pValThreshold]);
+
+      // console.log('sigData', sigData)
+
       if(sigData.length > 0){
         var msgs = [];
-        const sqlWorker = new Worker("/wasm/sql-worker.js"); 
+        const sqlWorker = new Worker("/workers/sql-worker.js"); 
         sqlWorker.postMessage({
           cmd: "getAnnotations",
           sigData: sigData,
           winSize: winSize,
           species : 'camelina',
-          token : token.apiToken
+          token : token.apiToken,
+          apiEndpoint : apiEndpoint
         });
         sqlWorker.onmessage = (e) => {
           if (e.data.cmd === "processed") {
@@ -378,6 +388,8 @@ export default function GWAS() {
   // }, [plinkResults]);
 
   useEffect(() => {
+
+    if(plinkResults.length > 0){
       const manhattanWorker = new Worker(
         new URL("../../public/workers/ManhattanWorker.js", import.meta.url)
       );
@@ -392,11 +404,13 @@ export default function GWAS() {
           setManhattanIsDone(true);
       };
     }
+
+
+    }
   }, [plinkResults]);
 
   return (
     <>
-      <UntwistThemeProvider values={{ isDarkMode, toggleTheme }}>
         {!modalIsOpen || (
           <MessageWithTimer
             messages={displayMessage}
@@ -404,45 +418,9 @@ export default function GWAS() {
           />
         )}
 
-        <Grid sx={{ ml: 2, marginTop: 2, marginBottom: 2, marginRight: 2 }}>
-          <Typography sx={{ marginTop: 2, marginBottom: 2 }} variant="h4">
-            Genome Wide Association Analysis
-          </Typography>
+   
 
-          <Typography variant="p">
-            {`This tool allows to perform GWAS analyses on the GWAS datasets available as part of untwist project. The pheotypes are can be selected from the following dropdown menu. The genotypic data consists of 3783751 SNP markers and is prefiltered for minor allele frequency (>= 0.05), Missingness per SNP ( < 0.1), quality score at SNP site ( >= 20) and a min depth ( >= 3). For details on the GWAS datasets please see FAQs`}
-          </Typography>
-        </Grid>
-
-        <div>
-          <Grid
-            sx={{
-              display: "flex",
-              "& > :not(style)": {
-                m: 0.5,
-                color: "primary.main",
-                padding: 0.1,
-                marginLeft: 2,
-              },
-            }}
-          >
-            <Autocomplete
-              size="small"
-              defaultValue={chosenFile}
-              // ref={autocompleteRef}
-              options={inputFiles}
-              sx={{ width: 558 }}
-              renderInput={(params) => (
-                <TextField {...params} label="Select a Trait" />
-              )}
-              onInputChange={(e, v) => {
-                setChosenFile(v);
-              }}
-            />
-          </Grid>
-        </div>
-
-        <div style={{ padding: 15 }}>
+        <div >
           <div>
             <Grid
               container
@@ -450,7 +428,7 @@ export default function GWAS() {
               // justifyContent="space-between"
               // alignItems="baseline"
               sx={{
-                marginTop: -2,
+                marginTop: 1,
                 marginLeft: 1,
                 mb: 1,
 
@@ -461,22 +439,26 @@ export default function GWAS() {
               }}
             >
               <div>
+              <Typography fontWeight={'bold'}>Correction for population Structure: </Typography>
+
                 <label>
                   <Checkbox
                     sx={{ ml: -1.5 }}
                     checked={gwasCorrectionOption === "without"}
                     onChange={() => handleGWAScorrection("without")}
                   />
-                  Single Marker GWAS
+                  Without correction
                 </label>
+
                 <label>
                   <Checkbox
                     sx={{ ml: 3 }}
                     checked={gwasCorrectionOption === "with"}
                     onChange={() => handleGWAScorrection("with")}
                   />
-                  Population corrected GWAS
+                  With correction
                 </label>
+
                 <Button
                   size="small"
                   sx={{ ml: 3 }}
@@ -485,15 +467,16 @@ export default function GWAS() {
                     () => {
                       if(gwasCorrectionOption == null){
                         alert('Please select one of the check boxes')
-                      }else if(chosenFile == ""){
+                      }else if(phenotype == ""){
                         alert("Please select a Phenotype")
                       }else{
                         runGWAS();
                       }
                     }}
                 >
-                  Run
+                  Perform GWAS
                 </Button>
+
               </div>
             </Grid>
 
@@ -558,12 +541,12 @@ export default function GWAS() {
                           </Typography>
                         </Grid>
                       </Grid>
-
-                      <Plot
+{isToggled &&  
+  <Plot
                         data={manhattanPlotData.data}
                         layout={{
                           ...manhattanPlotData.layout,
-                          title : `<b>${manhattanPlotData.layout.title.text}: ${chosenFile}</b>`,
+                          title : `<b>${manhattanPlotData.layout.title.text}: ${phenotype.title}</b>`,
                           plot_bgcolor: isDarkMode ? "#000000" : "#FFFFFF",
                           paper_bgcolor: isDarkMode ? "#000000" : "#FFFFFF",
                           font: {
@@ -593,8 +576,11 @@ export default function GWAS() {
                             "select2d",
                           ],
                         }}
+                        config={{ 'displaylogo': false, modeBarButtonsToRemove : ['toImage', 'zoom2d', 'toggleSpikelines','hoverClosestCartesian','hoverCompareCartesian', 'select2d', 'pan2d', 'autoScale2d', 'lasso2d'] }}
                         onClick={(e) => {handlePointClick(e)}}
                       />
+}
+                      
 
                     </TabPanel>
 
@@ -610,9 +596,9 @@ export default function GWAS() {
                           <CircularProgress color="inherit" />
                         </Stack>
                       ) : (
-                        <PlotlyPlots
+                        <QQPlot
                           plotSchema={{
-                            ploty_type: "qqplot",
+                            plot_type: "qqplot",
                             inputData: qqData,
                             variablesToPlot: [
                               "expectedQuantiles",
@@ -771,7 +757,6 @@ export default function GWAS() {
             )}
           </div>
         </div>
-      </UntwistThemeProvider>
     </>
   );
 }

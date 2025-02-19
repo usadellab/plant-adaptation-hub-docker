@@ -1,93 +1,150 @@
-# This file is part of [untwistApp], copyright (C) 2024 [ataul haleem].
+'use client';
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-'use client'
-
-import { Button } from '@mui/material'
-import React from 'react'
+import { Button, Box, Typography, Grid, Paper } from '@mui/material';
+import React from 'react';
 
 export default function Contact() {
   return (
-    <div style={{ padding: '0 8px' }} >
-      <h2 className="documentFirstHeading">
-        Contact &amp; Visitor information
-      </h2>
-      <p>
-        Please find detailed descriptions on how to reach the Forschungszentrum
-        Juelich here:
-      </p>
-      <div className="block button align left">
-        <a
-          href="https://www.fz-juelich.de/en/about-us/contact-visitor-information"
-          target="_blank"
+    <Box
+      sx={{
+        p: 1,
+        backgroundColor: '#f8f9fa',
+        minHeight: '100vh',
+        display: 'flex',
+      }}
+    >
+      <Paper
+        elevation={3}
+        sx={{
+          p: 4,
+          width: '100%',
+          borderRadius: '12px',
+          backgroundColor: '#ffffff',
+          boxShadow: '0 6px 15px rgba(0, 0, 0, 0.1)',
+        }}
+      >
+        <Typography
+          variant="h4"
+          sx={{
+            fontWeight: 600,
+            mb: 3,
+            textAlign: 'left',
+            color: '#333',
+          }}
         >
-          <Button variant="contained">How to reach us</Button>
-        </a>
-      </div>
+          Contact Us
+        </Typography>
+        <Grid
+          container
+          direction="row"
+          sx={{
+            columnGap: 6,
+            justifyContent: 'flex-start',
+            alignItems: 'stretch',
+          }}
+        >
+          {/* Left Column */}
+          <Grid item xs={12} md={4}>
+            {/* Address Section */}
+            <Typography
+              variant="h5"
+              sx={{
+                fontWeight: 500,
+                mb: 2,
+                color: '#333',
+              }}
+            >
+              Our Address:
+            </Typography>
+            <Typography variant="body1" sx={{ mb: 4, color: '#555' }}>
+              Wilhelm-Johnen-Straße
+              <br />
+              52428 Jülich
+            </Typography>
 
-      <p />
-      <h2 id="b96928cf-b321-4cf3-9bc3-e9884b6e73a5">Our Address:</h2>
-      <p>
-        Wilhelm-Johnen-Straße
-        <br />
-        52428 Jülich
-      </p>
-      <h3 id="f4feeec4-edb8-4e16-955b-db9e9d8c5e13">Our postal address:</h3>
-      <p>
-        Forschungszentrum Jülich GmbH
-        <br />
-        IBG-4
-        <br />
-        [Name of contact]
-        <br />
-        52425 Jülich
-        <br />
-        Germany
-      </p>
-      <p>
-        The institutes section IBG-4 is located in{' '}
-        <strong>building 14.6y</strong> and in{' '}
-        <strong>building 06.5 u+v</strong>{' '}
-        <strong>(Omics-/Data-based Bioinformatics)</strong> and in{' '}
-        <strong>building 05.11u </strong>(
-        <strong>Structure-based Bioinformatics)</strong>.
-      </p>
-      <div>
-        <a
-          target="_blank"
-          href="https://internet-live.fz-juelich.de/de/ueber-uns/kontakt/lageplan-2021-portal.pdf/@@download/file"
-        >
-          <figure className="figure detached center large">
-            <img
-              loading="lazy"
-              src="https://www.fz-juelich.de/en/ibg/ibg-4/about-us/contact-visitor-information/pdf-plan-1.jpg/@@images/image"
-              alt="Contact & Visitor information"
-            />
-            <figcaption>
-              Here you find a map of the Forschungszentrum Juelich.
-            </figcaption>
-          </figure>
-        </a>
-      </div>
-      <div>
-        <a
-          target="_blank"
-          href="/en/about-us/contact-visitor-information/interactive-site-plan-of-forschungszentrum-julich"
-        ></a>
-      </div>
-      <p />
-    </div>
-  )
+            {/* Postal Address Section */}
+            <Typography
+              variant="h6"
+              sx={{
+                fontWeight: 500,
+                mb: 2,
+                color: '#333',
+              }}
+            >
+              Our Postal Address:
+            </Typography>
+            <Typography variant="body1" sx={{ mb: 4, color: '#555' }}>
+              Forschungszentrum Jülich GmbH
+              <br />
+              IBG-4
+              <br />
+              [Name of contact]
+              <br />
+              52425 Jülich
+              <br />
+              Germany
+            </Typography>
+
+            <Box textAlign="left" sx={{ mb: 4 }}>
+              <a
+                href="https://www.fz-juelich.de/en/about-us/contact-visitor-information"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Button
+                  variant="contained"
+                  size="large"
+                  sx={{
+                    backgroundColor: '#1976d2',
+                    '&:hover': {
+                      backgroundColor: '#1565c0',
+                    },
+                  }}
+                >
+                  Contact & Visitor Information
+                </Button>
+              </a>
+            </Box>
+          </Grid>
+
+          {/* Right Column */}
+          <Grid item xs={12} md={8}>
+            <Box
+              sx={{
+                textAlign: 'left',
+                mb: 4,
+              }}
+            >
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://internet-live.fz-juelich.de/de/ueber-uns/kontakt/lageplan-2021-portal.pdf/@@download/file"
+              >
+                <Box
+                  component="figure"
+                  sx={{
+                    m: 0,
+                    p: 0,
+                    textAlign: 'left',
+                    '& img': {
+                      width: '100%', // Make image take full width of the column
+                      height: 'auto',
+                      borderRadius: '8px',
+                      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                    },
+                  }}
+                >
+                  <img
+                    loading="lazy"
+                    src="/fzj-reachus.png"
+                    alt="Contact & Visitor information"
+                  />
+                </Box>
+              </a>
+            </Box>
+          </Grid>
+        </Grid>
+      </Paper>
+    </Box>
+  );
 }
