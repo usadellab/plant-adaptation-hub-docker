@@ -1,4 +1,4 @@
-## Camelina Hub
+## Plant Adaptation Hub
 The Camelina Hub is a web platform developed as part of the UNTWIST project.
 UNTWIST studies stress adaptation mechanisms in camelina, a naturally resilient European oilseed crop. By understanding how camelina copes with stress, researchers aim to develop strategies to improve yield stability in camelina and other crops under challenging environmental conditions.
 
