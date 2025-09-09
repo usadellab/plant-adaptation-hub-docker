@@ -7,6 +7,6 @@ __pycache__
 out
 resources
 next.config.js
-public/genomeBrowser
+public
 GPL-3.0.txt
 add_GPL.py
