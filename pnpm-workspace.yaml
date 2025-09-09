@@ -1,0 +1,5 @@
+ignoredBuiltDependencies:
+  - '@fortawesome/fontawesome-free'
+  - es5-ext
+  - jss
+  - sharp

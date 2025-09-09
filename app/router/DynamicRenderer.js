@@ -1,36 +1,39 @@
 'use client'
 import React from 'react'
-import WelcomePage from '../components/WelcomePage'
-import GeoLocator from '../components/GeoLocator'
-import GWAS from '../components/PerformGWAS'
-import PCA from '../components/PCA'
-import MDS from '../components/MDS'
-import View from '../components/backup/GenomeBrowser'
-import FAQs from '../components/FAQs'
-import Contact from '../components/Contact'
-import Downloads from '../components/Downloads'
-import { VisPheno } from '../components/VisPheno'
 import { usePathname, useSearchParams } from 'next/navigation'
-import Login from '../components/LoginPage'
-import SummaryStatistics from '../components/SummaryStatistics'
-import PhyloTreeComp from '../components/PhyloTreeComp'
-import PeopleComponent from '../components/PeopleComponent'
-import PerformGWAS from '../components/PerformGWAS'
-import PerformPCA from '../components/PerformPCA'
-import PerformMDS from '../components/PerformMDS'
-import Provenience from '../components/Provenience'
-import GenomeOverView from '../components/GenomeOverView'
-import GenomeAnnotation from '../components/GenomeAnnotation'
-import GenomePhylogeny from '../components/GenomePhylogeny'
-import GenomeStructure from '../components/GenomeStructure'
-import CompareGenomes from '../components/CompareGenomes'
-import People from '../components/People'
-import DownloadComponent from '../components/DownloadsComponent'
-import Impressum from '../components/Impressum'
-import GDPRC from '../components/GDPRC'
-import GenomeBrowserStandAlone from '../components/GenomeBrowserStandAlone'
-import DatabaseExplorer from '../components/DatabaseExplorer'
-import GenomeAssemblies from '../components/GenomeAssemblies'
+import dynamic from 'next/dynamic'
+
+const WelcomePage = dynamic(() => import('../components/WelcomePage'))
+const GeoLocator = dynamic(() => import('../components/GeoLocator'))
+const GWAS = dynamic(() => import('../components/PerformGWAS'))
+const PCA = dynamic(() => import('../components/PCA'))
+const MDS = dynamic(() => import('../components/MDS'))
+const View = dynamic(() => import('../components/GenomeBrowser'))
+const FAQs = dynamic(() => import('../components/FAQs'))
+const Contact = dynamic(() => import('../components/Contact'))
+const Downloads = dynamic(() => import('../components/Downloads'))
+const VisPheno = dynamic(() => import('../components/VisPheno').then(mod => mod.VisPheno))
+const Login = dynamic(() => import('../components/LoginPage'))
+const SummaryStatistics = dynamic(() => import('../components/SummaryStatistics'))
+const PhyloTreeComp = dynamic(() => import('../components/PhyloTreeComp'))
+const PeopleComponent = dynamic(() => import('../components/PeopleComponent'))
+const PerformGWAS = dynamic(() => import('../components/PerformGWAS'))
+const PerformPCA = dynamic(() => import('../components/PerformPCA'))
+const PerformMDS = dynamic(() => import('../components/PerformMDS'))
+const Provenience = dynamic(() => import('../components/Provenience'))
+const GenomeOverView = dynamic(() => import('../components/GenomeOverView'))
+const GenomeAnnotation = dynamic(() => import('../components/GenomeAnnotation'))
+const GenomePhylogeny = dynamic(() => import('../components/GenomePhylogeny'))
+const GenomeStructure = dynamic(() => import('../components/GenomeStructure'))
+const CompareGenomes = dynamic(() => import('../components/CompareGenomes'))
+const People = dynamic(() => import('../components/People'))
+const DownloadComponent = dynamic(() => import('../components/DownloadsComponent'))
+const Impressum = dynamic(() => import('../components/Impressum'))
+const GDPRC = dynamic(() => import('../components/GDPRC'))
+const GenomeBrowserStandAlone = dynamic(() => import('../components/GenomeBrowserStandAlone'))
+const DatabaseExplorer = dynamic(() => import('../components/DatabaseExplorer'))
+const GenomeAssemblies = dynamic(() => import('../components/GenomeAssemblies'))
+
 const DynamicRenderer = () => {
   const pathname = usePathname()
   const searchParams = useSearchParams()

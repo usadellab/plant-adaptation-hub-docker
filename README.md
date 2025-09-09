@@ -19,3 +19,21 @@ For detailed documentation on using the Camelina Hub, please visit: [here](https
 ## Datasets 
 
  A detailed description of datasets is available [here](https://usadellab.github.io/plant-adaptation-hub-documentation/datasets)
+
+## Docker
+
+To build and run this application using Docker, follow these steps:
+
+1.  **Build the Docker image:**
+
+    ```bash
+    docker build -t plant-adaptation-hub .
+    ```
+
+2.  **Run the Docker container:**
+
+    ```bash
+    docker run -p 3000:3000 plant-adaptation-hub
+    ```
+
+    You can then access the application at [http://localhost:3000](http://localhost:3000).

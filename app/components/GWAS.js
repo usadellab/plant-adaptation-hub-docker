@@ -28,8 +28,7 @@ import { useTokenContext } from "../../contexts/TokenContext";
 import { useApiContext } from "@/contexts/ApiEndPoint";
 import { useUntwistThemeContext } from "../../contexts/ThemeContext";
 import { UntwistThemeProvider } from "../../contexts/ThemeContext";
-import View from "./backup/GenomeBrowser";
-import QQPlot from "./plots/qqplot";
+import GenomeBrowser from "./GenomeBrowser";
 
 import { useAppDataContext } from "@/contexts/AppDataContext";
 import Cookies from "js-cookie";
@@ -738,7 +737,7 @@ useEffect(() => {
                             the window size from ANNOTATIONS tab as well.
                           </Typography>
 
-                          <View
+                          <GenomeBrowser
                             chromosome={manplotChrClicked}
                             position={gbPosition}
                             window={

@@ -55,10 +55,10 @@ import * as htmlToImage from "html-to-image";
 import { jsPDF } from "jspdf";
 import VariableSelectionDialog from "./VariableSelectionDialog";
 import SearchGrid from "./Search";
-import PhenotypStummary from "./stats/PhenotypStummary";
 
 
-import BarPlot from "./plots/barplot";
+
+import BarPlot from "./BarPlot";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",

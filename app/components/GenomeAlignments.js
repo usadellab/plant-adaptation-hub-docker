@@ -4,7 +4,7 @@ import {
   createViewState,
   JBrowseLinearGenomeView,
 } from "@jbrowse/react-linear-genome-view";
-import assemblies from "/public/genomeBrowser/tracks/assemblies.json";
+import assemblies from "../../public/genomeBrowser/tracks/assemblies.json";
 // import { getSnapshot, onSnapshot } from "mobx-state-tree";
 
 function GenomeAlignments() {

@@ -38,8 +38,26 @@ const [plinkResults, setPlinkResults] = useState([]);
   const [startSummarize, setStartSummarize] = useState(false);
   const [chromosomeData, setChromosomeData] = useState([])
 
+  const [phenotypeStudies, setPhenotypeStudies] = useState([]);
+  const [selectedPhenotypeStudy, setSelectedPhenotypeStudy] = useState("");
+  const [phenotypeStudyMetaData, setPhenotypeStudyMetaData] = useState(null);
+  const [phenotypeSelectedStudyAssays, setPhenotypeSelectedStudyAssays] = useState([]);
+  const [phenotypeSelectedStudySelectedAssays, setPhenotypeSelectedStudySelectedAssays] = useState([]);
+  const [phenotypeSelectedStudySelectedAssaysPhenotypes, setPhenotypeSelectedStudySelectedAssaysPhenotypes] = useState([]);
+  const [phenotypeSelectedStudySelectedAssaysPhenotypesSelectedPhenotype, setPhenotypeSelectedStudySelectedAssaysPhenotypesSelectedPhenotype] = useState(null);
+  const [variablesToPlot, setVariablesToPlot] = useState([]);
+  const [phenotypeData, setPhenotypeData] = useState([]);
+  const [selected_plot_type, setSelectedPlotType] = useState("");
+  const [assayIds, setAssayIds] = useState([]);
+  const [expFactors, setExpFactors] = useState(null);
+  const [selectedFactor, setSelectedFactor] = useState(null);
+  const [divider, setDivider] = useState(null);
+  const [counter, setCounter] = useState(0);
+  const [assayDataForMap, setAssayDataForMap] = useState([]);
+  const [locationDataForMap, setLoctaionDataForMap] = useState([]);
+  const [selectedFactors, setSelectedFactors] = useState([]);
+  const [k, setK] = useState(2);
 
-  showHWEplot, setShowHWEplot
 
   const contextValue = {
     pcaData,setPCAData,
@@ -68,7 +86,26 @@ const [plinkResults, setPlinkResults] = useState([]);
     hweIsDone, setHWEisDone,
     showHWEplot, setShowHWEplot,
     startSummarize, setStartSummarize,
-    chromosomeData, setChromosomeData
+    chromosomeData, setChromosomeData,
+    phenotypeStudies, setPhenotypeStudies,
+    selectedPhenotypeStudy, setSelectedPhenotypeStudy,
+    phenotypeStudyMetaData, setPhenotypeStudyMetaData,
+    phenotypeSelectedStudyAssays, setPhenotypeSelectedStudyAssays,
+    phenotypeSelectedStudySelectedAssays, setPhenotypeSelectedStudySelectedAssays,
+    phenotypeSelectedStudySelectedAssaysPhenotypes, setPhenotypeSelectedStudySelectedAssaysPhenotypes,
+    phenotypeSelectedStudySelectedAssaysPhenotypesSelectedPhenotype, setPhenotypeSelectedStudySelectedAssaysPhenotypesSelectedPhenotype,
+    variablesToPlot, setVariablesToPlot,
+    phenotypeData, setPhenotypeData,
+    selected_plot_type, setSelectedPlotType,
+    assayIds, setAssayIds,
+    expFactors, setExpFactors,
+    selectedFactor, setSelectedFactor,
+    divider, setDivider,
+    counter, setCounter,
+    assayDataForMap, setAssayDataForMap,
+    locationDataForMap, setLoctaionDataForMap,
+    selectedFactors, setSelectedFactors,
+    k, setK
   };
 
   return <AppDataContext.Provider value={contextValue}>{children}</AppDataContext.Provider>;

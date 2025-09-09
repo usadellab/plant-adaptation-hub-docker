@@ -26,8 +26,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 
 import dynamic from "next/dynamic";
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
-import ChromosomePlot from "./test/ChromoMap";
-import ChromosomeMap from "./test/ChromosomePlot";
+
 
 import chrLengths from "/public/chromsizes.json";
 import BarPlot from "./BarPlot";

@@ -119,10 +119,11 @@ const BioPortalAnnotator = ({ termsToSearch }) => {
         // }
 
         try {
-          const response = await axios.post(`${apiEndpoint}/get_ontologies`, {
-            token: apiToken,
-            terms: termsToSearch
-          });
+          // const response = await axios.post(`${apiEndpoint}/get_ontologies`, {
+          //   token: apiToken,
+          //   terms: termsToSearch
+          // });
+          const response = await axios.get("/ontologies.json");
       
           console.log('response.data', response.data)
           setAnnotationsList(response.data)

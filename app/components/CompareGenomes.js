@@ -7,7 +7,8 @@ import axios from "axios";
 import { useApiContext } from "@/contexts/ApiEndPoint";
 import { useTokenContext } from "@/contexts/TokenContext";
 import ComputeGenomeComparison from "./ComputeGenomeComparison";
-import GenomeAlignments from "./GenomeAlignments";
+import dynamic from "next/dynamic";
+const GenomeAlignments = dynamic(() => import("./GenomeAlignments"), { ssr: false });
 
 export default function CompareGenomes() {
   const [assembliesData, setAssembliesData] = useState(null);
@@ -17,12 +18,17 @@ export default function CompareGenomes() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.post(
-          `${apiEndpoint}/get_genomes_metadata`,
-          { token: token.apiToken }, // Send data as object in request body
-          { headers: { "Content-Type": "application/json" } } // Set Content-Type header
-        );
-        setAssembliesData(response.data);
+        try {
+          // const response = await axios.post(
+          //   `${apiEndpoint}/get_genomes_metadata`,
+          //   { token: token.apiToken }, // Send data as object in request body
+          //   { headers: { "Content-Type": "application/json" } } // Set Content-Type header
+          // );
+          const response = await axios.get("/genomes_metadata.json");
+          setAssembliesData(response.data);
+        } catch (error) {
+          console.error("Error fetching or parsing data:", error);
+        }
       } catch (error) {
         console.error("Error fetching or parsing data:", error);
       }

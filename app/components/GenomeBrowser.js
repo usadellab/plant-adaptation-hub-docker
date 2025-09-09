@@ -1,3 +1,4 @@
+/*
 # This file is part of [untwistApp], copyright (C) 2024 [ataul haleem].
 
 # This program is free software: you can redistribute it and/or modify
@@ -12,6 +13,7 @@
 
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 import React, { useEffect } from "react";
 import "@fontsource/roboto";
@@ -22,8 +24,8 @@ import {
 
 // import {  createViewState, JBrowseCircularGenomeView } from "@jbrowse/react-circular-genome-view";
 // import { getSnapshot, onSnapshot } from "mobx-state-tree";
-import camregdata from "/public/genomeBrowser/2023_ExpressionDB_TPMs_RNAseqTracks.json";
-import GSE102422data from "/public/genomeBrowser/GSE102422_RNAseqTracks.json";
+import camregdata from "../../public/genomeBrowser/2023_ExpressionDB_TPMs_RNAseqTracks.json";
+import GSE102422data from "../../public/genomeBrowser/GSE102422_RNAseqTracks.json";
 
 const assembly = {
   name: "Camelina",

@@ -17,7 +17,7 @@ import { useTokenContext } from '@/contexts/TokenContext'
 import Cookies from 'js-cookie'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
-import postgresCounts from '../../public/postgres_latest.json'
+import postgresCounts from "../../public/postgres_latest.json";
 import PieChart from './PieChart'
 import GeoLocator from './GeoLocator'
 import AnimatedCounters from './AnimatedCounters'

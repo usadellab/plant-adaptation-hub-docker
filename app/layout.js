@@ -251,7 +251,7 @@ export default function RootLayout({ children }) {
   const [open, setOpen] = useState(true);
   const [selectedTheme, setSelectedTheme] = useState(lightTheme);
   const [isDark, setIsDark] = useState(false);
-  const [authenticated, setAuthenticated] = useState(false);
+  const [authenticated, setAuthenticated] = useState(true);
   const [appBarTitle, setAppBarTitle] = useState(defaultTitle);
   const { isDarkMode, toggleTheme } = useUntwistThemeContext();
 
@@ -274,18 +274,15 @@ export default function RootLayout({ children }) {
   const handleAppBarTitle = (text) => setAppBarTitle(formatTitle(text));
   const ToggleDrawer = () => setOpen(!open);
 
-  var gwasIconPic = new URL("/public/manhattan.png", import.meta.url);
-  var pcaIconPic = new URL("/public/pca.png", import.meta.url);
-  var mdsIconPic = new URL("/public/mds.png", import.meta.url);
-  var syntenyIconPic = new URL("/public/synteny_image.png", import.meta.url);
-  var genomeIconPic = new URL("/public/genome_icon.png", import.meta.url);
-  var genomeInfoIconPic = new URL(
-    "/public/genome_informatics_icon.png",
-    import.meta.url
-  );
-  var annotateIconPic = new URL("/public/annotate.png", import.meta.url);
-  var phylogenyIconPic = new URL("/public/phylogeny.png", import.meta.url);
-  var hublogo = new URL("/public/hub_logo.png", import.meta.url);
+  var gwasIconPic = "/manhattan.png";
+  var pcaIconPic = "/pca.png";
+  var mdsIconPic = "/mds.png";
+  var syntenyIconPic = "/synteny_image.png";
+  var genomeIconPic = "/genome_icon.png";
+  var genomeInfoIconPic = "/genome_informatics_icon.png";
+  var annotateIconPic = "/annotate.png";
+  var phylogenyIconPic = "/phylogeny.png";
+  var hublogo = "/hub_logo.png";
 
   const menuItems = [
     {

@@ -47,12 +47,13 @@ const DatabaseExplorer = () => {
 
   const getPstgresTable = async (tableName) => {
     try {
-      const response = await axios.post(`${apiEndpoint}/postgres`, {
-        tableName, // Passed in the body as JSON
-        token: apiToken, // Passed in the body as JSON
-      });
+      // const response = await axios.post(`${apiEndpoint}/postgres`, {
+      //   tableName, // Passed in the body as JSON
+      //   token: apiToken, // Passed in the body as JSON
+      // });
+      const response = await axios.get("/postgres.json");
 
-      return response.data.result; // Assuming `result` is the key in your backend response
+      return response.data; // Assuming `result` is the key in your backend response
     } catch (error) {
       console.error("Error fetching data:", error.response || error.message);
       throw error; // Re-throw error if needed

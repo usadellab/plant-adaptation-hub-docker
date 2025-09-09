@@ -38,7 +38,8 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import BioPortalAnnotator from "./BioPortalAnnotator";
 import { capitalizeFirstLetter } from "./utils";
 import AssayLayout from "./AssayLayout";
-import GWAS from "./GWAS";
+import dynamic from "next/dynamic";
+const GWAS = dynamic(() => import("./GWAS"), { ssr: false });
 import { generatePlinkFam, generatePlinkFamWithBLUPs } from "./utils";
 import SearchGrid from "./Search";
 

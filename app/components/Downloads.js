@@ -23,9 +23,9 @@ export default function Downloads({ studyId }) {
 
   useEffect(() => {
     axios
-      .post(`${apiEndpoint}/assays?studyId=${[studyId]}&token=${apiToken}`)
+      .get("/assays.json")
       .then((response) => {
-        let data = response.data.result.data;
+        let data = response.data;
         setAssayData(data);
         let assayNames = data.map((assay) => assay.assay_name);
         setAssayNames(assayNames);
@@ -51,31 +51,12 @@ export default function Downloads({ studyId }) {
   };
 
   const handleDownloadClick = (downloadFormat) => {
-    axios({
-        method: 'post',
-        url: `${apiEndpoint}/download/assay?assayId=${selectedItems}&downloadFormat=${downloadFormat}&token=${apiToken}`,
-        responseType: 'blob'  // Use 'blob' for both TSV and ZIP downloads
-    })
-    .then((response) => {
-        // Generate a URL for the blob directly from the response data
-        const url = window.URL.createObjectURL(response.data);
-
-        // Create an anchor element and trigger the download
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `data.${downloadFormat === 'tsv' ? 'zip' : 'zip'}`;
-        document.body.appendChild(a);
-        a.click();
-
-        // Clean up the URL object and remove the anchor element
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-
-        // console.log(`Downloaded ${downloadFormat} for assay ID: ${selectedItems}`);
-    })
-    .catch((error) => {
-        console.error(`Error downloading ${downloadFormat} for assay ID: ${selectedItems}`, error);
-    });
+    const a = document.createElement('a');
+    a.href = downloadFormat === 'tsv' ? '/data.zip' : '/data.arc-ro-crate.zip';
+    a.download = downloadFormat === 'tsv' ? 'data.zip' : 'data.arc-ro-crate.zip';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
 };
 
   const renderAssayCard = (selectedAssay, index) => {

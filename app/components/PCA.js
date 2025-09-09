@@ -9,7 +9,7 @@ import { useTokenContext } from "../../contexts/TokenContext";
 import { useAppDataContext } from "../../contexts/AppDataContext";
 import { useState } from "react";
 import Cookies from "js-cookie";
-import PCAplot from "./plots/pcaplot";
+
 
 export default function PCA({studyId}) {
   const { pcaData, setPCAData } = useAppDataContext();
@@ -125,7 +125,7 @@ export default function PCA({studyId}) {
 
         {!pcaData || (
           <div>
-            <PCAplot
+            <PlotlyPlots
               plotSchema={{
                 plot_type: "pca",
                 inputData: pcaData,

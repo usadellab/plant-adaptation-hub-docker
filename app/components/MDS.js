@@ -21,7 +21,7 @@ import { useAppDataContext } from "../../contexts/AppDataContext";
 import { useTokenContext } from "../../contexts/TokenContext";
 import { useApiContext } from "@/contexts/ApiEndPoint";
 import Cookies from "js-cookie";
-import MDSplot from "./plots/mdsplot";
+
 
 
 // var dbID = {
@@ -147,7 +147,7 @@ useEffect(() => {
 
             {!mdsData || (
               <div>
-                <MDSplot
+                <PlotlyPlots
                   plotSchema={{
                     plot_type: "mds",
                     inputData: mdsData,

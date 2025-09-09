@@ -7,11 +7,9 @@ import HeatmapPlot from "./HeatMap";
 import { titleize } from "i/lib/methods";
 import Cookies from "js-cookie";
 import { useAppDataContext } from "@/contexts/AppDataContext";
-import BoxPlot from "./plots/boxplot";
-import BarPlot from "./plots/barplot";
-import LinePlot from "./plots/lineplot";
-import RegressionAnalysis from "./stats/RegressionAnalysis";
-import HistogramPlot from "./plots/histogram";
+
+import BarPlot from "./BarPlot";
+
 import SwipeableViews from 'react-swipeable-views'; // Import SwipeableViews
 import { autoPlay } from 'react-swipeable-views-utils'; // For autoplay (optional)
 
